@@ -5,7 +5,7 @@
 Published by Eric Thies May 2020
 
 ### PineScript Resources 
-* Pinescript Reference (via Tradingview)](https://www.tradingview.com/pine-script-reference/v4/)	
+* [Pinescript Reference (via Tradingview)](https://www.tradingview.com/pine-script-reference/v4/)	
 * [PineScript Stack Overflow](https://stackoverflow.com/questions/tagged/pine-script) 
 * [PineCoders Tradingview Account](https://www.tradingview.com/u/PineCoders/#published-scripts)
 * [Pinescript FAQ via PineCoders Website](https://www.pinecoders.com/faq_and_code/)
