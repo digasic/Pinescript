@@ -1,6 +1,6 @@
 # Pinescript Library 
 ## Use and Update this Library as Needed 
-### Pinescript is a programming language developed by[Tradingview](https://marketgodx.com/tradingview) for financial market traders to apply technical indicators and plots to their HTML5 platform.
+### Pinescript is a programming language developed by [Tradingview](https://marketgodx.com/tradingview) for financial market traders to apply technical indicators and plots to their HTML5 platform.
 
 Published by Eric Thies May 2020
 
