@@ -1,10 +1,10 @@
 # Pinescript Library 
-## Published by Eric Thies May 2020
+### Published by Eric Thies May 2020
 
-## Pinescript is a programming language developed by [Tradingview](https://marketgodx.com/tradingview) for financial market traders and investors to design, apply and strategize various technical indicators/plots to their investing approach. 
+#### Pinescript is a programming language developed by [Tradingview](https://marketgodx.com/tradingview) for financial market traders and investors to design, apply and strategize various technical indicators/plots to their investing approach. 
 Use and Update this Library as Needed 
 
-### PineScript Resources 
+#### PineScript Resources 
 * [Pinescript Reference (via Tradingview)](https://www.tradingview.com/pine-script-reference/v4/)	
 * [PineScript Stack Overflow](https://stackoverflow.com/questions/tagged/pine-script) 
 * [PineCoders Tradingview Account](https://www.tradingview.com/u/PineCoders/#published-scripts)
