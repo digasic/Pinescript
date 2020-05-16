@@ -1,0 +1,21 @@
+//@version=4
+study(title="Kelt-BBand Combo - KingThies", shorttitle="KBC (Pine v4)", overlay=true)
+// Keltner Inputs
+useTrueRange = true, kelt_length = 20, kelt_mult = 1, kelt_src = input(close, title="Kelt Source") , kelt_ma = ema(kelt_src,kelt_length), kelt_range = useTrueRange ? tr : high - low, kelt_rangema = ema(kelt_range, kelt_length)
+kelt_upper = kelt_ma + kelt_rangema * kelt_mult, kelt_lower = kelt_ma - kelt_rangema * kelt_mult, kelt_c = color.blue
+
+//BBand Input 
+bb_len = 20, bb_src = input(close, title="Source"), bb_mult = 2
+bb_basis = sma(bb_src, bb_len), bb_dev = bb_mult * stdev(bb_src, bb_len), bb_upper = bb_basis + bb_dev , bb_lower= bb_basis - bb_dev, KBC_pinch = bb_upper < kelt_upper and bb_lower > kelt_lower, KBC_Consolidate = bb_upper < kelt_upper and rising(bb_lower,1) and bb_lower < kelt_lower
+
+// Band Variations 
+_threedev = 3*stdev(bb_src,bb_len), _onedev = 1*stdev(bb_src,bb_len), _upper1Dev = bb_basis + _onedev, _lower1Dev = bb_basis - _onedev
+_upper3Dev = bb_basis + _threedev,  _lower3Dev = bb_basis - _threedev
+
+//Plots
+ba = plot(bb_basis,title='Bollinger Basis', color= color.green)
+bu1=plot(_upper1Dev,title='BB 1 Dev',color= color.blue), bl1 = plot(_lower1Dev,title='BB Lower 1 Dev', color=color.blue)
+bu = plot(bb_upper, title='BB Upper Band 2 Dev',color=color.blue), bl= plot(bb_lower, title='BB Lower Band 2 Dev', color=color.blue)
+bu3=plot(_upper3Dev,title= 'BB Upper Band 3 Dev', color=color.blue), bl3= plot(_lower3Dev,title= 'BB Lower Band 3 Dev', color=color.blue)
+fill(bu1,bl1, color.white,70), fill(bu,bl, color.white,80),fill(bu3,bl3, color.white,90) 
+
