@@ -1,0 +1,198 @@
+donchian(len) =>
+    avg(lowest(len), highest(len))
+
+conversionLine = donchian(conversionPeriods)
+baseLine = donchian(basePeriods)
+leadLine1 = avg(conversionLine, baseLine)
+leadLine2 = donchian(laggingSpan2Periods)
+resolve(src, default) =>
+    if na(src)
+        default
+    else
+        src
+tk_cross_bull = crossover(conversionLine, baseLine)
+tk_cross_bear = crossunder(conversionLine, baseLine)
+cross_y = (conversionLine[1] * (baseLine - baseLine[1]) - 
+   baseLine[1] * (conversionLine - conversionLine[1])) / 
+   (baseLine - baseLine[1] - (conversionLine - conversionLine[1]))
+tk_cross_below_kumo = cross_y <= leadLine2[1] and cross_y <= leadLine1[1] and cross_y <= leadLine2 and 
+   cross_y <= leadLine1
+tk_cross_above_kumo = cross_y >= leadLine2[1] and cross_y >= leadLine1[1] and cross_y >= leadLine2 and 
+   cross_y >= leadLine1
+tk_cross_inside_kumo = not tk_cross_below_kumo and not tk_cross_above_kumo
+pk_cross_bull = crossover(haclose, baseLine)
+pk_cross_bear = crossunder(haclose, baseLine)
+cross_pk_y = (haclose[1] * (baseLine - baseLine[1]) - baseLine[1] * (haclose - haclose[1])) / 
+   (baseLine - baseLine[1] - (haclose - haclose[1]))
+pk_cross_below_kumo = cross_pk_y <= leadLine2[1] and cross_pk_y <= leadLine1[1] and 
+   cross_pk_y <= leadLine2 and cross_pk_y <= leadLine1
+pk_cross_above_kumo = cross_pk_y >= leadLine2[1] and cross_pk_y >= leadLine1[1] and 
+   cross_pk_y >= leadLine2 and cross_pk_y >= leadLine1
+pk_cross_inside_kumo = not pk_cross_below_kumo and not pk_cross_above_kumo
+kumo_bull = crossover(haclose, leadLine1) and leadLine1 > leadLine2 or 
+   crossover(haclose, leadLine2) and leadLine2 > leadLine1
+kumo_bear = crossunder(haclose, leadLine2) and leadLine1 > leadLine2 or 
+   crossunder(haclose, leadLine1) and leadLine2 > leadLine1
+price_below_kumo = haclose < leadLine2 and haclose < leadLine1
+price_above_kumo = haclose > leadLine2 and haclose > leadLine1
+price_inside_kumo = not price_below_kumo and not price_above_kumo
+no_dp_leadLine1 = avg(conversionLine, baseLine)
+no_dp_leadLine2 = donchian(laggingSpan2Periods)
+lead_line_cross_bull = crossover(no_dp_leadLine1, no_dp_leadLine2)
+lead_line_cross_bear = crossunder(no_dp_leadLine1, no_dp_leadLine2)
+price_below_kumo := haclose < no_dp_leadLine2 and haclose < no_dp_leadLine1
+price_above_kumo := haclose > no_dp_leadLine2 and haclose > no_dp_leadLine1
+price_inside_kumo := not price_below_kumo and not price_above_kumo
+past_price = offset(haclose, displacement)
+lag_line_bull_cross = haclose > haclose[displacement]
+lag_line_bear_cross = haclose < haclose[displacement]
+past_price_below_kumo = past_price < leadLine2 and past_price < leadLine1
+past_price_above_kumo = past_price > leadLine2 and past_price > leadLine1
+past_price_inside_kumo = leadLine2 < past_price and past_price < leadLine1 and 
+   leadLine1 < past_price and past_price < leadLine2
+
+tk_cross_score = 0.0
+pk_cross_score = 0.0
+kumo_breakout_score = 0.0
+span_cross_score = 0.0
+lag_line_cross_score = 0.0
+lag_line_placement_score = 0.0
+price_placement_score = 0.0
+total_score = 0.0
+use_tk_cross = true
+use_pk_cross = true
+lag_line_location_weight = true
+use_kumo_breakout = true
+use_lag_line_location = true
+use_lag_line = true
+use_span_cross = true
+use_price_location = true
+
+tk_cross_score := resolve(tk_cross_score[1], 0)
+tk_cross_weight = 1
+tk_cross_weak_bullish_points = .5
+tk_cross_neutral_bullish_points = 1
+tk_cross_strong_bullish_points = 2
+tk_cross_weak_bearish_points = -.05
+tk_cross_neutral_bearish_points = -1
+tk_cross_strong_bearish_points = -2
+pk_cross_score := resolve(pk_cross_score[1], 0)
+pk_cross_weight = 1
+pk_cross_weak_bullish_points = .5
+pk_cross_neutral_bullish_points = 1
+pk_cross_strong_bullish_points = 2
+pk_cross_weak_bearish_points = -0.05
+pk_cross_neutral_bearish_points = -1
+pk_cross_strong_bearish_points = -2
+lag_line_cross_weight = 1
+kumo_breakout_score := resolve(kumo_breakout_score[1], 0)
+kumo_breakout_weight = 1
+kumo_breakout_bullish_points = 1
+kumo_breakout_bearish_points = -1
+span_cross_weight = 1
+
+span_cross_score := resolve(span_cross_score[1], 0)
+span_cross_weak_bullish_points = .5
+span_cross_neutral_bullish_points = 1
+span_cross_strong_bullish_points = 2
+span_cross_weak_bearish_points = -.5
+span_cross_neutral_bearish_points = -1
+span_cross_strong_bearish_points = -2
+lag_line_cross_score := resolve(lag_line_cross_score[1], 0)
+lag_line_cross_weak_bullish_points = .5
+lag_line_cross_neutral_bullish_points = 1
+lag_line_cross_strong_bullish_points = 2
+lag_line_cross_weak_bearish_points = -.05
+lag_line_cross_neutral_bearish_points = -1
+lag_line_cross_strong_bearish_points = -2
+lag_line_location_above_points = 1
+lag_line_location_inside_points = 0
+lag_line_location_below_points = -1
+lag_line_placement_score := resolve(lag_line_placement_score[1], 0)
+price_placement_score := resolve(price_placement_score[1], 0)
+price_location_weight = 1
+price_location_above_points = 1
+price_location_inside_points = 0
+price_location_below_points = -1
+
+tk_cross_score := tk_cross_bull and tk_cross_below_kumo ? tk_cross_weak_bullish_points : 
+   tk_cross_score
+tk_cross_score := tk_cross_bull and tk_cross_inside_kumo ? tk_cross_neutral_bullish_points : 
+   tk_cross_score
+tk_cross_score := tk_cross_bull and tk_cross_above_kumo ? tk_cross_strong_bullish_points : 
+   tk_cross_score
+tk_cross_score := tk_cross_bear and tk_cross_below_kumo ? tk_cross_strong_bearish_points : 
+   tk_cross_score
+tk_cross_score := tk_cross_bear and tk_cross_inside_kumo ? tk_cross_neutral_bearish_points : 
+   tk_cross_score
+tk_cross_score := tk_cross_bear and tk_cross_above_kumo ? tk_cross_weak_bearish_points : 
+   tk_cross_score
+pk_cross_score := pk_cross_bull and pk_cross_below_kumo ? pk_cross_weak_bullish_points : 
+   pk_cross_score
+pk_cross_score := pk_cross_bull and pk_cross_inside_kumo ? pk_cross_neutral_bullish_points : 
+   pk_cross_score
+pk_cross_score := pk_cross_bull and pk_cross_above_kumo ? pk_cross_strong_bullish_points : 
+   pk_cross_score
+pk_cross_score := pk_cross_bear and pk_cross_below_kumo ? pk_cross_strong_bearish_points : 
+   pk_cross_score
+pk_cross_score := pk_cross_bear and pk_cross_inside_kumo ? pk_cross_neutral_bearish_points : 
+   pk_cross_score
+pk_cross_score := pk_cross_bear and pk_cross_above_kumo ? pk_cross_weak_bearish_points : 
+   pk_cross_score
+kumo_breakout_score := kumo_bull and price_above_kumo ? kumo_breakout_bullish_points : 
+   kumo_breakout_score
+kumo_breakout_score := kumo_bear and price_below_kumo ? kumo_breakout_bearish_points : 
+   kumo_breakout_score
+span_cross_score := lead_line_cross_bull and price_below_kumo ? span_cross_weak_bullish_points : 
+   span_cross_score
+span_cross_score := lead_line_cross_bull and price_inside_kumo ? span_cross_neutral_bullish_points : 
+   span_cross_score
+span_cross_score := lead_line_cross_bull and price_above_kumo ? span_cross_strong_bullish_points : 
+   span_cross_score
+span_cross_score := lead_line_cross_bear and price_above_kumo ? span_cross_weak_bearish_points : 
+   span_cross_score
+span_cross_score := lead_line_cross_bear and price_inside_kumo ? span_cross_neutral_bearish_points : 
+   span_cross_score
+span_cross_score := lead_line_cross_bear and price_below_kumo ? span_cross_strong_bearish_points : 
+   span_cross_score
+lag_line_cross_score := lag_line_bull_cross and past_price_below_kumo ? 
+   lag_line_cross_weak_bullish_points : lag_line_cross_score
+lag_line_cross_score := lag_line_bull_cross and past_price_inside_kumo ? 
+   lag_line_cross_neutral_bullish_points : lag_line_cross_score
+lag_line_cross_score := lag_line_bull_cross and past_price_above_kumo ? 
+   lag_line_cross_strong_bullish_points : lag_line_cross_score
+lag_line_cross_score := lag_line_bear_cross and past_price_above_kumo ? 
+   lag_line_cross_weak_bearish_points : lag_line_cross_score
+lag_line_cross_score := lag_line_bear_cross and past_price_inside_kumo ? 
+   lag_line_cross_neutral_bearish_points : lag_line_cross_score
+lag_line_cross_score := lag_line_bear_cross and past_price_below_kumo ? 
+   lag_line_cross_strong_bearish_points : lag_line_cross_score
+lag_line_placement_score := past_price_above_kumo ? lag_line_location_above_points : 
+   lag_line_placement_score
+lag_line_placement_score := past_price_inside_kumo ? lag_line_location_inside_points : 
+   lag_line_placement_score
+lag_line_placement_score := past_price_below_kumo ? lag_line_location_below_points : 
+   lag_line_placement_score
+price_below_kumo := haclose < leadLine2 and haclose < leadLine1
+price_above_kumo := haclose > leadLine2 and haclose > leadLine1
+price_inside_kumo := not price_below_kumo and not price_above_kumo
+price_placement_score := price_above_kumo ? price_location_above_points : price_placement_score
+price_placement_score := price_inside_kumo ? price_location_inside_points : price_placement_score
+price_placement_score := price_below_kumo ? price_location_below_points : price_placement_score
+TKx = (tk_cross_weight * tk_cross_score)
+PKx = (pk_cross_weight * pk_cross_score)
+KOx = kumo_breakout_weight * kumo_breakout_score
+SPx = (span_cross_weight * span_cross_score)
+LLx = (lag_line_cross_weight * lag_line_cross_score)
+PLx = (price_location_weight * price_placement_score)
+// Total Points
+TotalPoints = (TKx + PKx + KOx + SPx + LLx + PLx)/5
+eachpoint = volume * ((haclose - haopen) / (high - low))
+allpoints = cum(eachpoint)
+condition = close > open
+deflen = 100
+len = input(100, "Length")
+_MarketGodx(_cond, _len) =>  sum(_cond ? 1 : 0, _len)
+v1 = _MarketGodx(condition, int(len))
+plot(v1)
+plot(TotalPoints)
