@@ -192,7 +192,4 @@ allpoints = cum(eachpoint)
 condition = close > open
 deflen = 100
 len = input(100, "Length")
-_MarketGodx(_cond, _len) =>  sum(_cond ? 1 : 0, _len)
-v1 = _MarketGodx(condition, int(len))
-plot(v1)
 plot(TotalPoints)
